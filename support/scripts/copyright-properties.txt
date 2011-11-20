@@ -1,0 +1,2 @@
+# Copyright {YEAR} {ORG}
+# site: http://www.taobao.pk
