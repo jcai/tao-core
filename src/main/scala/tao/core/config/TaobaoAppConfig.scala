@@ -1,4 +1,8 @@
 /*
+ * Copyright 2011 The Yishishun IT Soft Department.
+ * site: http://www.taobao.pk
+ */
+/*
  * Copyright 2011 The Yishishun Investment Management Co.,Ltd.
  * site: http://www.taobao.pk
  */
@@ -13,6 +17,8 @@ import reflect.BeanProperty
  */
 class TaobaoAppConfig {
     @BeanProperty
+    var appName:String = _
+    @BeanProperty
     var appKey:String=_
     @BeanProperty
     var appSecret:String=_
@@ -24,4 +30,8 @@ class TaobaoAppConfig {
     var feeCode:String = _
     @BeanProperty
     var freeVersion:String = _
+    @BeanProperty
+    var mongoServer:String = "localhost:27017"
+    @BeanProperty
+    var mongoDb:String = "taobao"
 }

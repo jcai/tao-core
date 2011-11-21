@@ -1,4 +1,8 @@
 /*
+ * Copyright 2011 The Yishishun IT Soft Department.
+ * site: http://www.taobao.pk
+ */
+/*
  * Copyright 2011 The Yishishun Investment Management Co.,Ltd.
  * site: http://www.taobao.pk
  */
