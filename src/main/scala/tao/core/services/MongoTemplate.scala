@@ -34,4 +34,5 @@ class MongoTemplate(config:TaobaoAppConfig) {
         fun(db(coll))
     }
     def find[A <% DBObject](coll:String,ref: A) = db(coll).find(ref)
+    def findOne[A <% DBObject](coll:String,ref: A) = db(coll).findOne(ref)
 }

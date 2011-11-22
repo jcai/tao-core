@@ -27,6 +27,56 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
     mongoTemplate.executeInColl(TaoCoreConstants.COLL_USER){coll=>
         coll.ensureIndex(MongoDBObject(TaoCoreConstants.FIELD_NICK->1),"nick",true)
     }
+
+    /**
+     * if free user
+     * @param nick user nick
+     */
+    def isFreeUser(nick:String):Boolean={
+        val user = findUser(nick)
+        if(user != null){
+            val version = user.get(TaoCoreConstants.FIELD_VERSION)
+            return version == null || String.valueOf(version) == config.freeVersion
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * find user by nick name
+     * @param nick nick name
+     * @return DBObject
+     */
+    def findUser(nick:String)=mongoTemplate.findOne(
+        TaoCoreConstants.COLL_USER,MongoDBObject(TaoCoreConstants.FIELD_NICK->nick))
+
+    /**
+     * verify user
+     * @param nick nick name
+     */
+    def verifyValidateUser(nick:String){
+        val user=findUser(nick)
+        if(user != null){
+            val version = user.get(TaoCoreConstants.FIELD_VERSION)
+            if(version == null || String.valueOf(version) == config.freeVersion){
+                val countUse = user.get(TaoCoreConstants.FIELD_COUNT_USE)
+                if(countUse != null){
+                    if(countUse.asInstanceOf[Int]>10){
+                        throw new RuntimeException("你试用已经超过十次，请订购正式无限制版本");
+                    }
+                }
+                //inc count_use field
+                mongoTemplate.executeInColl(TaoCoreConstants.COLL_USER){coll=>
+                    coll.update(
+                        MongoDBObject(TaoCoreConstants.FIELD_NICK->nick),
+                        $inc(TaoCoreConstants.FIELD_COUNT_USE->1)
+                    )
+                }
+            }
+        }else{
+            throw new RuntimeException("非法请求，未能找到用户");
+        }
+    }
     //save or update user by nick and dbObj
     private def saveOrUpdateUser(nick:String,dbObj:DBObject){
         mongoTemplate.saveOrUpdate(

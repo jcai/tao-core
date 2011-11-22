@@ -20,4 +20,5 @@ object TaoCoreConstants {
     final val FIELD_NICK="nick"
     final val FIELD_SHOP_ID="shop_id"
     final val FIELD_VERSION="version"
+    final val FIELD_COUNT_USE="count_use"
 }
