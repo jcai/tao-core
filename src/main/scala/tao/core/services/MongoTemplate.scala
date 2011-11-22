@@ -22,13 +22,6 @@ class MongoTemplate(config:TaobaoAppConfig) {
     val db= MongoConnection(config.mongoServer)(config.mongoDb)
 
     /**
-     * 保存一个对象
-     */
-    def save(coll:String,dbObject:MongoDBObject){
-        db(coll) += dbObject
-    }
-
-    /**
      * 通过查询来更新
      */
     def saveOrUpdate(coll:String,queryObj:DBObject,dbObject:DBObject){

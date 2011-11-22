@@ -34,11 +34,13 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
     /**
      * 初始化用户
      */
-    def initUser(session:String,nick:String){
+    def initUser(session:String,nick:String,actor:Boolean=true){
         saveOrUpdateUser(nick, MongoDBObject(
             TaoCoreConstants.FIELD_NICK->nick,
             TaoCoreConstants.FIELD_SESSION->session))
-        Actor.actor{
+        val body= ()=>{
+            println("init user");
+            logger.debug("init user")
             val userRequest = new UserGetRequest
             userRequest.setFields("user_id,has_shop")
             userRequest.setNick(nick)
@@ -87,6 +89,11 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
             saveOrUpdateUser(nick,
                 MongoDBObject(TaoCoreConstants.FIELD_SHOP_ID->shopId,
                     TaoCoreConstants.FIELD_VERSION->version))
+        }
+        if(actor){
+            Actor.actor{body()}
+        }else{
+            body()
         }
     }
 }

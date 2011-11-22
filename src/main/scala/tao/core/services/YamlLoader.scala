@@ -7,6 +7,8 @@ package tao.core.services
 import org.yaml.snakeyaml.constructor.Constructor
 import java.io.{InputStream, InputStreamReader}
 import org.yaml.snakeyaml.{Yaml, TypeDescription}
+import org.springframework.core.io.DefaultResourceLoader
+import org.apache.commons.io.IOUtils
 
 /**
  * implements YamlLoader
@@ -14,6 +16,16 @@ import org.yaml.snakeyaml.{Yaml, TypeDescription}
  * @version 0.1
  */
 object YamlLoader{
+    private val resourceLoader = new DefaultResourceLoader
+    def loadConfigFromResource[T <: Object](location:String)(implicit m: Manifest[T]):T = {
+        var is:InputStream = null
+        try{
+            is=resourceLoader.getResource(location).getInputStream
+            return loadConfig(is)
+        }finally{
+            IOUtils.closeQuietly(is)
+        }
+    }
     /**
      * load config file
      */

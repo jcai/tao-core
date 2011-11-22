@@ -1,0 +1,6 @@
+appKey: 12405322
+appSecret: sandbox94c704107f84a38daeec9681b
+apiUrl:  http://gw.api.tbsandbox.com/router/rest
+containerUrl: http://container.api.tbsandbox.com/container
+freeVersion: ts-15820-1
+feeCode: ts-15820
