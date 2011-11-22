@@ -33,6 +33,7 @@ class MongoTemplate(config:TaobaoAppConfig) {
     def executeInColl(coll:String)(fun:MongoCollection=>Unit){
         fun(db(coll))
     }
+    def executeInDB[T](fun:MongoDB=>T)=fun(db)
     def find[A <% DBObject](coll:String,ref: A) = db(coll).find(ref)
     def findOne[A <% DBObject](coll:String,ref: A) = db(coll).findOne(ref)
 }

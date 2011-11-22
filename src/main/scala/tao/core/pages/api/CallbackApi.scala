@@ -63,7 +63,6 @@ class CallbackApi {
             }
             logger.info("user {} logging",nick)
             userService.initUser(top_session,nick)
-            cookies.writeCookieValue(TaoCoreConstants.formatted(config.appKey),URLEncoder.encode(nick,"UTF-8"));
             return "Start"
         }catch{
             case e=>

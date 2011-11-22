@@ -13,6 +13,9 @@ import actors.Actor
 import org.slf4j.LoggerFactory
 import com.mongodb.casbah.Imports._
 import collection.JavaConversions._
+import org.apache.tapestry5.services.Cookies
+import org.springframework.util.StringUtils
+import java.net.{URLDecoder, URLEncoder}
 
 
 /**
@@ -20,7 +23,10 @@ import collection.JavaConversions._
  * @author jcai
  * @version 0.1
  */
-class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:TaobaoApiClient) {
+class UserService(config:TaobaoAppConfig,
+                  mongoTemplate:MongoTemplate,
+                  client:TaobaoApiClient,
+                  cookies:Cookies) {
     //logger
     private val logger = LoggerFactory getLogger getClass
     //create unique index on NICK field
@@ -33,7 +39,7 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
      * @param nick user nick
      */
     def isFreeUser(nick:String):Boolean={
-        val user = findUser(nick)
+        val user = findUser(nick).getOrElse(null)
         if(user != null){
             val version = user.get(TaoCoreConstants.FIELD_VERSION)
             return version == null || String.valueOf(version) == config.freeVersion
@@ -42,6 +48,14 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
         }
     }
 
+    def getOnlineUser:DBObject={
+        val nickCookie=cookies.readCookieValue(TaoCoreConstants.NICK_COOKIE_NAME_FORMAT.format(config.appKey))
+        if (StringUtils.hasText(nickCookie)){
+            val nick=URLDecoder.decode(nickCookie,"UTF-8")
+            return findUser(nick).getOrElse(null)
+        }
+        return null
+    }
     /**
      * find user by nick name
      * @param nick nick name
@@ -54,8 +68,8 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
      * verify user
      * @param nick nick name
      */
-    def verifyValidateUser(nick:String){
-        val user=findUser(nick)
+    def verifyValidateUser:DBObject={
+        val user=getOnlineUser
         if(user != null){
             val version = user.get(TaoCoreConstants.FIELD_VERSION)
             if(version == null || String.valueOf(version) == config.freeVersion){
@@ -68,11 +82,12 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
                 //inc count_use field
                 mongoTemplate.executeInColl(TaoCoreConstants.COLL_USER){coll=>
                     coll.update(
-                        MongoDBObject(TaoCoreConstants.FIELD_NICK->nick),
+                        MongoDBObject(TaoCoreConstants.FIELD_NICK->user.get(TaoCoreConstants.FIELD_NICK)),
                         $inc(TaoCoreConstants.FIELD_COUNT_USE->1)
                     )
                 }
             }
+            return user;
         }else{
             throw new RuntimeException("非法请求，未能找到用户");
         }
@@ -94,6 +109,8 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
         saveOrUpdateUser(nick, MongoDBObject(
             TaoCoreConstants.FIELD_NICK->nick,
             TaoCoreConstants.FIELD_SESSION->session))
+        //write cookie
+        cookies.writeCookieValue(TaoCoreConstants.NICK_COOKIE_NAME_FORMAT.format(config.appKey),URLEncoder.encode(nick,"UTF-8"))
         val body= ()=>{
             //get user information
             logger.debug("init user")
