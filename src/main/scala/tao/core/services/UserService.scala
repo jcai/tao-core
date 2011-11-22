@@ -45,7 +45,7 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
             TaoCoreConstants.FIELD_NICK->nick,
             TaoCoreConstants.FIELD_SESSION->session))
         val body= ()=>{
-            println("init user");
+            //get user information
             logger.debug("init user")
             val userRequest = new UserGetRequest
             userRequest.setFields("user_id,has_shop")
@@ -60,7 +60,7 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
             }else{
                 throw new RuntimeException(userResponse.getMsg);
             }
-            //获取订购关系
+            //get shopId
             var shopId = 0L
             if(user.getHasShop){
                 val request = new ShopGetRequest
@@ -77,6 +77,7 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
                     logger.error("fail to fetch,code:{},msg:{}",response.getErrorCode,response.getMsg)
                 }
             }
+            //get version
             var version= config.freeVersion
             val vasRequest = new VasSubscribeGetRequest
             vasRequest.setNick(nick)
@@ -95,6 +96,8 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
                 MongoDBObject(TaoCoreConstants.FIELD_SHOP_ID->shopId,
                     TaoCoreConstants.FIELD_VERSION->version))
         }
+
+        //execute
         if(actor){
             Actor.actor{body()}
         }else{
