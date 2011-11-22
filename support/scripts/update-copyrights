@@ -23,7 +23,7 @@ require 'find'
 SCRIPT_DIR = File.split(__FILE__)[0]
 YEAR = Time.now.year.to_s
 
-$ORG = "The Yishishun IT Soft Department."
+$ORG = "The Yishishun IT Department."
 
 def read_template(file)
   result = []

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 The Yishishun IT Soft Department.
+ * Copyright 2011 The Yishishun IT Department.
  * site: http://www.taobao.pk
  */
 package tao.core.config
