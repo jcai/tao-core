@@ -16,15 +16,18 @@ import collection.JavaConversions._
 
 
 /**
- * User Service
+ * User Service for taobao sellers and buyers
  * @author jcai
  * @version 0.1
  */
 class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:TaobaoApiClient) {
+    //logger
     private val logger = LoggerFactory getLogger getClass
+    //create unique index on NICK field
     mongoTemplate.executeInColl(TaoCoreConstants.COLL_USER){coll=>
         coll.ensureIndex(MongoDBObject(TaoCoreConstants.FIELD_NICK->1),"nick",true)
     }
+    //save or update user by nick and dbObj
     private def saveOrUpdateUser(nick:String,dbObj:DBObject){
         mongoTemplate.saveOrUpdate(
             TaoCoreConstants.COLL_USER,
@@ -32,7 +35,10 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
             dbObj)
     }
     /**
-     * 初始化用户
+     * init user by session_key and nick
+     * @param session taobao session key
+     * @param nick taobao nick name
+     * @param actor if use Actor to execute
      */
     def initUser(session:String,nick:String,actor:Boolean=true){
         saveOrUpdateUser(nick, MongoDBObject(
@@ -83,7 +89,6 @@ class UserService(config:TaobaoAppConfig,mongoTemplate:MongoTemplate,client:Taob
                         version = aus.getItemCode
                     })
                 }
-                logger.debug(vasResponse.getArticleUserSubscribes.mkString(","));
             }
             logger.debug("user version:{}",version)
             saveOrUpdateUser(nick,
