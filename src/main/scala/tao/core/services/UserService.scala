@@ -16,7 +16,7 @@ import collection.JavaConversions._
 
 
 /**
- *
+ * User Service
  * @author jcai
  * @version 0.1
  */
