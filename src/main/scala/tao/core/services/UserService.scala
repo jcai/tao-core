@@ -75,8 +75,8 @@ class UserService(config:TaobaoAppConfig,
             if(version == null || String.valueOf(version) == config.freeVersion){
                 val countUse = user.get(TaoCoreConstants.FIELD_COUNT_USE)
                 if(countUse != null){
-                    if(countUse.asInstanceOf[Int]>10){
-                        throw new RuntimeException("你试用已经超过十次，请订购正式无限制版本");
+                    if(countUse.asInstanceOf[Int]>1000){
+                        throw new RuntimeException("你试用已经超过一千次，请订购正式无限制版本");
                     }
                 }
                 //inc count_use field

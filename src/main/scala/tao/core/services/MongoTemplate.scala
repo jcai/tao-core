@@ -27,13 +27,33 @@ class MongoTemplate(config:TaobaoAppConfig) {
     def saveOrUpdate(coll:String,queryObj:DBObject,dbObject:DBObject){
         db(coll).update(queryObj,MongoDBObject("$set"->dbObject),true,false)
     }
+
+    /**
+     * delete record using query object
+     */
     def delete(coll:String,queryObj:MongoDBObject){
         db(coll) -= queryObj
     }
-    def executeInColl(coll:String)(fun:MongoCollection=>Unit){
-        fun(db(coll))
-    }
+
+    /**
+     * execute command with a collection
+     */
+    def executeInColl[T](coll:String)(fun:MongoCollection=>T)=fun(db(coll))
+
+    /**
+     * execute command with a db object
+     */
     def executeInDB[T](fun:MongoDB=>T)=fun(db)
+
+    /**
+     * find records with collection
+     */
     def find[A <% DBObject](coll:String,ref: A) = db(coll).find(ref)
+
+    /**
+     * Returns a single object from this collection matching the query.
+     * @param o the query object
+     * @return (Option[T]) Some() of the object found, or <code>None</code> if no such object exists
+     */
     def findOne[A <% DBObject](coll:String,ref: A) = db(coll).findOne(ref)
 }

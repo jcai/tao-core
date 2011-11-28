@@ -97,7 +97,7 @@
         <dependency>
             <groupId>taobao</groupId>
             <artifactId>taobao-sdk-java-online_standard</artifactId>
-            <version>20111028</version>
+            <version>20111118</version>
         </dependency>
         <dependency>
             <groupId>com.mongodb.casbah</groupId>
@@ -106,7 +106,6 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>taokuaidi</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -268,7 +267,7 @@
         <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
         <spring-release-version>2.5.6.SEC02</spring-release-version>
         <hibernate-release-version>3.6.5.Final</hibernate-release-version>
-        <tapestry-release-version>5.3-rc-2</tapestry-release-version>
+        <tapestry-release-version>5.3</tapestry-release-version>
         <lucene-release-version>3.2.0</lucene-release-version>
     </properties>
 </project>
