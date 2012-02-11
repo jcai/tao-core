@@ -16,6 +16,7 @@ import collection.JavaConversions._
 import org.apache.tapestry5.services.Cookies
 import org.springframework.util.StringUtils
 import java.net.{URLDecoder, URLEncoder}
+import java.util.Date
 
 
 /**
@@ -154,7 +155,10 @@ class UserService(config:TaobaoAppConfig,
                 logger.debug(vasResponse.getBody)
                 if(vasResponse.getArticleUserSubscribes != null){
                     vasResponse.getArticleUserSubscribes.foreach(aus=>{
-                        version = aus.getItemCode
+                        //判断未超时
+                        if(aus.getDeadline.getTime > new Date().getTime){
+                            version = aus.getItemCode
+                        }
                     })
                 }
             }

@@ -15,11 +15,13 @@
             <artifactId>tapestry-core</artifactId>
             <version>${tapestry-release-version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.apache.tapestry</groupId>
             <artifactId>tapestry-yuicompressor</artifactId>
             <version>${tapestry-release-version}</version>
         </dependency>
+        -->
 
         <dependency>
             <groupId>org.apache.tapestry</groupId>
@@ -206,6 +208,19 @@
                     </args>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -267,7 +282,7 @@
         <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
         <spring-release-version>2.5.6.SEC02</spring-release-version>
         <hibernate-release-version>3.6.5.Final</hibernate-release-version>
-        <tapestry-release-version>5.3</tapestry-release-version>
+        <tapestry-release-version>5.3.1</tapestry-release-version>
         <lucene-release-version>3.2.0</lucene-release-version>
     </properties>
 </project>
