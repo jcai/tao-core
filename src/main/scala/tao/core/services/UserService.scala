@@ -149,23 +149,25 @@ class UserService(config:TaobaoAppConfig,
             var version= config.freeVersion
             val vasRequest = new VasSubscribeGetRequest
             vasRequest.setNick(nick)
-            vasRequest.setArticleCode(config.feeCode)
+            vasRequest.setArticleCode(config.freeVersion)
             val vasResponse = client.execute(vasRequest)
             if(vasResponse.isSuccess){
                 logger.debug(vasResponse.getBody)
                 if(vasResponse.getArticleUserSubscribes != null){
                     vasResponse.getArticleUserSubscribes.foreach(aus=>{
-                        //判断未超时
-                        if(aus.getDeadline.getTime > new Date().getTime){
+                        //是收费项目，并且未超过期限
+                        if(config.feeCode == aus.getItemCode && aus.getDeadline.getTime > new Date().getTime){
                             version = aus.getItemCode
                         }
                     })
                 }
+                saveOrUpdateUser(nick,
+                    MongoDBObject(TaoCoreConstants.FIELD_SHOP_ID->shopId,
+                        TaoCoreConstants.FIELD_VERSION->version))
+            }else{
+                saveOrUpdateUser(nick,MongoDBObject(TaoCoreConstants.FIELD_SHOP_ID->shopId))
             }
             logger.debug("user version:{}",version)
-            saveOrUpdateUser(nick,
-                MongoDBObject(TaoCoreConstants.FIELD_SHOP_ID->shopId,
-                    TaoCoreConstants.FIELD_VERSION->version))
         }
 
         //execute
